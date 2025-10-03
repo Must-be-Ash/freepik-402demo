@@ -1,209 +1,294 @@
-# Freepik 402 Demo
+# Freepik x402 Image Generator
 
-A minimal demonstration of integrating Freepik's AI image generation API with the x402 payment system, requiring crypto payments before accessing the image generation service.
+This app brings together the **x402 Protocol**, **Coinbase Developer Platform's Embedded Wallet**, **Onramp**, and **Freepik's AI Image Generator** to demonstrate a new type of pay-per-use business model. By enabling micropayments with stablecoins through x402, it creates a digital product that's affordable for customers, profitable for service providers, and sustainable for platforms. Customers pay only for what they use with no commitments. Platforms don't spend upfront to access the service provider. It's a win-win scenario for all three parties.
 
-## Overview
+Users don't need any crypto experience. With **Embedded Wallet**, they simply log in with email and a wallet is created for them automatically. **Onramp** lets them top up using Apple Pay (US only) or credit card without KYC. This abstracts away all crypto complexity and puts everything under the hood. Using **x402 Protocol**, users pay $0.08 to generate images with one click—no wallet signatures required.
 
-This project creates a payment-gated API that wraps Freepik's Mystic AI image generation endpoint. Users must pay in USDC via crypto wallets to access the image generation service.
+With x402's low transaction fees, Freepik's AI suite accessible through x402, and **Embedded Wallet**, and **Onramp** removing crypto UX friction, a new type of digital product becomes possible. One where customers don't overpay, and platforms and service providers don't lose on costs, transaction fees, upfront expenses, or subsidizing usage.
 
-## Features
+## What This App Does
 
-- 🔐 **Payment-gated API**: Crypto payments required before API access
-- 🎨 **AI Image Generation**: Powered by Freepik's Mystic AI
-- 💳 **Multiple Networks**: Support for Base testnet and mainnet
-- 🚀 **Easy Integration**: Simple Express.js server with TypeScript
-- 📊 **Task Tracking**: Check generation status with separate endpoint
+Generate AI-powered images using Freepik's Mystic AI, with automatic crypto payments via the x402 protocol. No manual payment handling required - the `x402-fetch` library intercepts 402 responses and handles payment authorization automatically.
+
+## Architecture Overview
+
+### Frontend Components
+
+- **`app/page.tsx`** - Main page with password protection
+- **`components/ClientApp.tsx`** - Handles Coinbase wallet connection state
+- **`components/SignInScreen.tsx`** - Coinbase wallet connection UI
+- **`components/SignedInScreen.tsx`** - Main app container after wallet connection
+- **`components/ImageGenerator.tsx`** - Image generation form and payment flow
+  - Uses `x402-fetch` to wrap standard `fetch()` with automatic payment handling
+  - Integrates with Coinbase CDP SDK for wallet operations
+  - Polls task status endpoint for completion
+
+### Backend API Routes
+
+- **`app/api/generate-image/route.ts`** - Main image generation endpoint
+  - Forwards requests to Freepik's x402 API
+  - Handles payment validation and logging
+  - Includes webhook URL for async completion
+
+- **`app/api/task-status/route.ts`** - Task polling endpoint
+  - Checks generation status by task_id
+  - Returns generated image URLs when complete
+
+- **`app/api/webhooks/freepik/route.ts`** - Webhook receiver
+  - Receives completed image notifications from Freepik
+  - Validates webhook signatures
+  - Stores results in memory for retrieval
+
+### Libraries & Utilities
+
+- **`lib/config.ts`** - CDP and app configuration
+- **`lib/task-store.ts`** - In-memory task result storage
+- **`lib/webhook-security.ts`** - Webhook signature validation
+- **`components/Providers.tsx`** - Coinbase CDP React context provider
+
+## How It Works
+
+```
+┌─────────────┐
+│   Browser   │
+│  (Frontend) │
+└──────┬──────┘
+       │ 1. User submits prompt
+       ▼
+┌─────────────────────────────┐
+│   ImageGenerator.tsx        │
+│  - Wraps fetch() with       │
+│    x402-fetch               │
+│  - CDP wallet signs payment │
+└──────┬──────────────────────┘
+       │ 2. POST /api/generate-image
+       ▼
+┌─────────────────────────────┐
+│ /api/generate-image/route   │
+│  - Forwards to Freepik      │
+│  - Includes webhook URL     │
+└──────┬──────────────────────┘
+       │ 3. POST to Freepik x402 API
+       ▼
+┌─────────────────────────────┐
+│   Freepik API               │
+│  - Returns 402 if no payment│
+│  - x402-fetch auto-pays     │
+│  - Returns task_id          │
+└──────┬──────────────────────┘
+       │ 4. Async generation (30-60s)
+       ▼
+┌─────────────────────────────┐
+│   Freepik Backend           │
+│  - Generates image          │
+│  - POSTs to webhook URL     │
+└──────┬──────────────────────┘
+       │ 5. Webhook callback
+       ▼
+┌─────────────────────────────┐
+│ /api/webhooks/freepik       │
+│  - Stores result            │
+│  - Validates signature      │
+└─────────────────────────────┘
+       │
+       │ 6. Frontend polls /api/task-status
+       ▼
+┌─────────────────────────────┐
+│   User sees image           │
+└─────────────────────────────┘
+```
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- A crypto wallet (for receiving payments)
+- Node.js 18+
 - Freepik API key ([Get one here](https://www.freepik.com/api))
-- Some testnet tokens for testing (Base Sepolia USDC)
+- Coinbase Developer Platform account for CDP SDK
+- USDC on Base network for payments (mainnet) or Base Sepolia (testnet)
 
 ### Installation
 
-1. **Clone and setup**:
+1. **Clone and install dependencies:**
    ```bash
-   cd freepik
    npm install
    ```
 
-2. **Configure environment**:
+2. **Configure environment:**
    ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
+   cp .env.example .env.local
    ```
 
-3. **Required environment variables**:
+3. **Set required environment variables in `.env.local`:**
    ```env
-   FREEPIK_API_KEY=your-freepik-api-key-here
-   WALLET_ADDRESS=0xYourWalletAddressHere
-   FACILITATOR_URL=https://x402.org/facilitator
-   NETWORK=base-sepolia
-   PORT=3000
+   # Freepik
+   FREEPIK_API_KEY=your-freepik-api-key
+
+   # Network (base for mainnet, base-sepolia for testnet)
+   NEXT_PUBLIC_NETWORK=base
+
+   # Coinbase Developer Platform
+   NEXT_PUBLIC_CDP_PROJECT_ID=your-cdp-project-id
+   CDP_API_KEY_ID=your-cdp-api-key-id
+   CDP_API_KEY_SECRET=your-cdp-api-key-secret
+
+   # USDC Contract
+   USDC_CONTRACT_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+   # Webhook (for development, use ngrok or webhook.site)
+   WEBHOOK_URL=https://webhook.site/your-unique-id
    ```
 
-4. **Start the server**:
+4. **Start development server:**
    ```bash
    npm run dev
    ```
 
-## API Endpoints
+5. **Open in browser:**
+   ```
+   http://localhost:3000
+   ```
 
-### Free Endpoints
+### Webhook Setup for Development
 
-- `GET /` - Service information
-- `GET /health` - Health check
+Freepik needs to send completion notifications to your webhook. In development:
 
-### Paid Endpoints (Require Crypto Payment)
-
-- `POST /v1/x402/ai/mystic` - Generate image (**$0.02 USDC**)
-- `GET /v1/x402/ai/mystic/:taskId` - Get task status (**$0.001 USDC**)
-
-## Usage Examples
-
-### 1. Basic Image Generation
-
+**Option 1: Use webhook.site (easiest)**
 ```bash
-# First request will return 402 Payment Required
-curl -X POST http://localhost:3000/v1/x402/ai/mystic \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "prompt": "A beautiful sunset over mountains",
-    "resolution": "2k",
-    "aspect_ratio": "widescreen_16_9"
-  }'
+# Visit https://webhook.site
+# Copy your unique URL
+# Set in .env.local:
+WEBHOOK_URL=https://webhook.site/your-unique-id
 ```
 
-Response (402 Payment Required):
-```json
-{
-  "error": "Payment Required",
-  "payment": {
-    "amount": "$0.02",
-    "network": "base-sepolia",
-    "to": "0xYourWalletAddress",
-    "instructions": "..."
-  }
-}
-```
-
-### 2. Making Payment and Retrying
-
-After completing the crypto payment (using a compatible wallet or x402 client), retry with the payment proof:
-
+**Option 2: Use ngrok**
 ```bash
-curl -X POST http://localhost:3000/v1/x402/ai/mystic \\
-  -H "Content-Type: application/json" \\
-  -H "X-PAYMENT: your-payment-proof-here" \\
-  -d '{
-    "prompt": "A beautiful sunset over mountains",
-    "resolution": "2k",
-    "aspect_ratio": "widescreen_16_9"
-  }'
+# Install ngrok
+brew install ngrok
+
+# Start ngrok (in separate terminal)
+ngrok http 3000
+
+# Set in .env.local:
+WEBHOOK_URL=https://abc123.ngrok.io/api/webhooks/freepik
 ```
 
-Success Response:
-```json
-{
-  "data": {
-    "task_id": "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-    "status": "IN_PROGRESS",
-    "generated": []
-  }
-}
-```
+## Configuration
 
-### 3. Check Task Status
+### Networks
 
-```bash
-curl -H "X-PAYMENT: your-payment-proof-here" \\
-  http://localhost:3000/v1/x402/ai/mystic/046b6c7f-0b8a-43b9-b35d-6489e6daee91
-```
-
-## Payment Flow
-
-1. **Initial Request**: Client makes API request
-2. **402 Response**: Server responds with payment requirements
-3. **Payment**: Client pays required amount in USDC to specified wallet
-4. **Retry with Proof**: Client includes payment proof in `X-PAYMENT` header
-5. **Success**: Server validates payment and processes request
-
-## Supported Parameters
-
-The `/v1/x402/ai/mystic` endpoint supports all Freepik Mystic parameters:
-
-- `prompt` (required): Text description of the image
-- `resolution`: "1k", "2k", or "4k"
-- `aspect_ratio`: Various ratios including "square_1_1", "widescreen_16_9"
-- `model`: "realism", "fluid", or "zen"
-- `creative_detailing`: 0-100 (detail level)
-- `engine`: AI engine selection
-- And more... (see [Freepik API docs](https://docs.freepik.com/api-reference/mystic/post-mystic))
-
-## Network Configuration
-
-### Testnet (Default)
-- Network: `base-sepolia`
-- Facilitator: `https://x402.org/facilitator`
-- Currency: Testnet USDC
-
-### Mainnet
-- Network: `base`
-- Facilitator: `https://api.x402.org/facilitator`
-- Currency: Real USDC
-
-To switch to mainnet, update your `.env`:
+**Base Mainnet (Production):**
 ```env
-NETWORK=base
-FACILITATOR_URL=https://api.x402.org/facilitator
+NEXT_PUBLIC_NETWORK=base
+USDC_CONTRACT_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 ```
 
-## Development
+**Base Sepolia (Testnet):**
+```env
+NEXT_PUBLIC_NETWORK=base-sepolia
+USDC_CONTRACT_ADDRESS=0x036CbD53842c5426634e7929541eC2318f3dCF7e
+```
 
-### Scripts
+### Image Generation Options
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build TypeScript to JavaScript
-- `npm start` - Start production server
-- `npm run format` - Format code with Prettier
-- `npm run lint` - Lint code with ESLint
+- **Resolution**: 1k, 2k, 4k
+- **Aspect Ratio**: square (1:1), widescreen (16:9), portrait (3:4), landscape (4:3)
+- **Model**: realism, fluid, zen
+- **Creative Detailing**: 0-100 (controls level of detail)
 
-### Project Structure
+## Key Technologies
+
+- **Next.js 14** - React framework with App Router
+- **x402-fetch** - Automatic HTTP payment handling
+- **Coinbase CDP SDK** - Wallet creation and management
+- **Freepik Mystic AI** - Image generation
+- **Base Network** - Ethereum L2 for low-cost USDC payments
+- **Tailwind CSS** - Styling
+- **Framer Motion** - Animations
+
+## Payment Flow Details
+
+1. User submits image prompt
+2. `x402-fetch` wraps the request to `/api/generate-image`
+3. First attempt returns 402 with payment requirements
+4. `x402-fetch` automatically:
+   - Reads payment requirements from response
+   - Signs EIP-3009 authorization with CDP wallet
+   - Retries request with `X-PAYMENT` header
+5. Server validates payment and forwards to Freepik
+6. Freepik returns task_id immediately
+7. Image generates asynchronously (~30-60 seconds)
+8. Freepik sends completion webhook with image URL
+9. Frontend polls task status until complete
+
+## Project Structure
 
 ```
-src/
-├── index.ts              # Main Express server
-├── freepik-client.ts     # Freepik API wrapper
-└── types.ts              # TypeScript interfaces
+freepik/
+├── app/
+│   ├── api/
+│   │   ├── generate-image/route.ts    # Main API: forwards to Freepik
+│   │   ├── task-status/route.ts       # Polls generation status
+│   │   └── webhooks/freepik/route.ts  # Receives completion callbacks
+│   ├── layout.tsx                     # Root layout with CDP provider
+│   └── page.tsx                       # Main page with password gate
+├── components/
+│   ├── ImageGenerator.tsx             # Image gen form + x402 payment
+│   ├── ClientApp.tsx                  # Wallet connection logic
+│   ├── SignInScreen.tsx               # Wallet connect UI
+│   ├── SignedInScreen.tsx             # Main app after connect
+│   └── Providers.tsx                  # CDP React provider setup
+├── lib/
+│   ├── config.ts                      # App configuration
+│   ├── task-store.ts                  # In-memory task storage
+│   └── webhook-security.ts            # Webhook signature validation
+└── .env.local                         # Environment variables
 ```
 
 ## Troubleshooting
 
-### Common Issues
+### "Payment verification failed"
+- **Mainnet not supported yet**: Currently, Freepik's x402 API only works reliably on Base Sepolia testnet
+- Switch to testnet configuration in `.env.local`
 
-1. **Missing Environment Variables**
-   - Ensure all required variables are set in `.env`
-   - Check that your wallet address starts with `0x`
+### "No payment header provided"
+- CDP wallet not properly initialized
+- Check that `NEXT_PUBLIC_CDP_PROJECT_ID` and related keys are set
+- Ensure wallet is connected (check browser console)
 
-2. **Payment Not Working**
-   - Verify you have testnet USDC in your wallet
-   - Check that the wallet address in `.env` matches your receiving wallet
-   - Ensure you're on the correct network (base-sepolia for testnet)
+### "Webhook not receiving callbacks"
+- Webhook URL must be publicly accessible
+- If using localhost, set up ngrok or webhook.site
+- Verify `WEBHOOK_URL` in `.env.local`
+- Check Freepik didn't return 500 error (check server logs)
 
-3. **Freepik API Errors**
-   - Verify your Freepik API key is valid and active
-   - Check API rate limits and quotas
-   - Review the Freepik API documentation for parameter requirements
+### Payment goes through but no image
+- Check webhook is receiving callbacks (monitor webhook.site or server logs)
+- Verify webhook URL is publicly accessible
+- Check task status manually: `/api/task-status?task_id=your-task-id`
 
-### Getting Help
+## Development
 
-- [x402 Documentation](https://docs.x402.org)
+```bash
+# Development server with hot reload
+npm run dev
+
+# Production build
+npm run build
+
+# Start production server
+npm start
+
+# Lint code
+npm run lint
+```
+
+## Learn More
+
+- [x402 Protocol Documentation](https://docs.x402.org)
+- [Coinbase Developer Platform](https://docs.cdp.coinbase.com)
 - [Freepik API Documentation](https://docs.freepik.com)
-- [x402 Discord](https://discord.gg/x402)
+- [Base Network](https://base.org)
 
 ## License
 
@@ -211,5 +296,4 @@ MIT
 
 ---
 
-*This is a demonstration project showing how to integrate crypto payments with existing APIs using the x402 protocol.*# freepik-402
-# freepik-402demo
+**Note**: This project demonstrates x402 HTTP payment integration. The implementation handles payment authorization client-side using CDP wallets and EIP-3009 token authorizations.

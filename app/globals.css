@@ -1,0 +1,905 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+
+    /* Custom app variables */
+    --primary-color: #000000;
+    --secondary-color: #ffffff;
+    --accent-color: #007AFF;
+    --background-color: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --border-color: #e5e5e5;
+    --success-color: #34c759;
+    --error-color: #ff3b30;
+    --card-background: #ffffff;
+    --input-background: #f8f9fa;
+    --hover-background: #f5f5f5;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+body {
+  background: var(--background-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.header .subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.pricing-info {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f9ff;
+  color: var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 24px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #e0f2fe;
+}
+
+.pricing-info .price {
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
+/* Card Design */
+.card {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.card .subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-background);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  background: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.form-group select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  appearance: none;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-family: inherit;
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--secondary-color);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #0056cc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+}
+
+.btn-primary:disabled {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Wallet Info */
+.wallet-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--hover-background);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.wallet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.wallet-left-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.wallet-address-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.wallet-fund-button {
+  margin-top: 0.25rem;
+}
+
+.auth-section {
+  flex-shrink: 0;
+}
+
+.wallet-info h3 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.wallet-address {
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.wallet-address.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  position: relative;
+}
+
+.wallet-address.clickable:hover {
+  background-color: var(--hover-background);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.wallet-address.clickable:active {
+  transform: translateY(0);
+}
+
+/* Small version of modern auth button */
+.modern-auth-button-small {
+  position: relative;
+  display: inline-block;
+}
+
+.modern-auth-button-small::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(145deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  z-index: 1;
+}
+
+.modern-auth-button-small::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 3px;
+  background: linear-gradient(145deg, #6a6a6a 0%, #5a5a5a 50%, #4a4a4a 100%);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 3px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  z-index: 2;
+  transform: translateY(-1px);
+}
+
+.modern-auth-button-small:hover::after {
+  background: linear-gradient(145deg, #7a7a7a 0%, #6a6a6a 50%, #5a5a5a 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  transform: translateY(0.25px);
+}
+
+.modern-auth-button-small:active::after {
+  background: linear-gradient(145deg, #5a5a5a 0%, #4a4a4a 50%, #3a3a3a 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  transform: translateY(2px);
+}
+
+.modern-auth-button-small > *,
+.modern-auth-button-small button,
+.modern-auth-button-small a {
+  all: unset !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  padding: 6px 12px !important;
+  border-radius: 20px !important;
+  font-weight: 500 !important;
+  color: white !important;
+  background: transparent !important;
+  border: none !important;
+  min-width: auto !important;
+  font-size: 12px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  transform: translateY(-1px) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Text movement to match button animation */
+.modern-auth-button-small:hover > *,
+.modern-auth-button-small:hover button,
+.modern-auth-button-small:hover a {
+  transform: translateY(0.25px) !important;
+}
+
+.modern-auth-button-small:active > *,
+.modern-auth-button-small:active button,
+.modern-auth-button-small:active a {
+  transform: translateY(2px) !important;
+}
+
+/* Remove any remaining default button styling */
+.modern-auth-button-small button:hover,
+.modern-auth-button-small a:hover,
+.modern-auth-button-small *:hover,
+.modern-auth-button-small button:active,
+.modern-auth-button-small a:active, 
+.modern-auth-button-small *:active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Output Section */
+.output {
+  background: var(--hover-background);
+  border-radius: 12px;
+  padding: 2rem;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.output[style*="color: #ff6b6b"] {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: var(--error-color) !important;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  border-top: 2px solid var(--accent-color);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.generated-image {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+}
+
+.task-info {
+  background: var(--input-background);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: 0.8125rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  align-self: stretch;
+}
+
+.task-info div {
+  margin-bottom: 0.25rem;
+}
+
+.task-info div:last-child {
+  margin-bottom: 0;
+}
+
+/* FAQ Section */
+.faq {
+  margin-top: 4rem;
+}
+
+.faq h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--primary-color);
+  letter-spacing: -0.025em;
+}
+
+.faq-item {
+  margin-bottom: 1rem;
+  background: var(--card-background);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.faq-item h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.faq-item p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.faq-item a {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.faq-item a:hover {
+  color: #0056cc;
+  text-decoration-thickness: 2px;
+}
+
+/* Sign-in Screen */
+.signin-container {
+  text-align: center;
+  max-width: none;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.signin-card {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.signin-card h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.signin-card .description {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Override ALL button styles with extreme specificity */
+.modern-auth-button {
+  position: relative;
+  display: inline-block;
+}
+
+.modern-auth-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(145deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  z-index: 1;
+}
+
+.modern-auth-button::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  right: 4px;
+  bottom: 5px;
+  background: linear-gradient(145deg, #6a6a6a 0%, #5a5a5a 50%, #4a4a4a 100%);
+  border-radius: 46px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  z-index: 2;
+  transform: translateY(-1px);
+}
+
+.modern-auth-button:hover::after {
+  background: linear-gradient(145deg, #7a7a7a 0%, #6a6a6a 50%, #5a5a5a 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 3px rgba(0,0,0,0.2);
+  transform: translateY(1px);
+}
+
+.modern-auth-button:active::after {
+  background: linear-gradient(145deg, #5a5a5a 0%, #4a4a4a 50%, #3a3a3a 100%);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+  transform: translateY(2px);
+}
+
+.modern-auth-button > *,
+.modern-auth-button button,
+.modern-auth-button a {
+  all: unset !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 16px 32px !important;
+  border-radius: 50px !important;
+  font-weight: 500 !important;
+  color: white !important;
+  background: transparent !important;
+  border: none !important;
+  min-width: 180px !important;
+  font-size: 16px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  transform: translateY(-1px) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Text movement to match button animation */
+.modern-auth-button:hover > *,
+.modern-auth-button:hover button,
+.modern-auth-button:hover a {
+  transform: translateY(1px) !important;
+}
+
+.modern-auth-button:active > *,
+.modern-auth-button:active button,
+.modern-auth-button:active a {
+  transform: translateY(2px) !important;
+}
+
+/* Remove any remaining default button styling */
+.modern-auth-button button:hover,
+.modern-auth-button a:hover,
+.modern-auth-button *:hover,
+.modern-auth-button button:active,
+.modern-auth-button a:active, 
+.modern-auth-button *:active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Hide button when modal is open */
+body:has([role="dialog"]) .modern-auth-button,
+body:has(.cdp-modal) .modern-auth-button,
+body:has([data-dialog]) .modern-auth-button {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease !important;
+}
+
+/* Alternative approach - hide when overlay is present */
+.modern-auth-button {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure modals are above the button */
+[role="dialog"],
+.cdp-modal,
+[data-dialog],
+.modal,
+.overlay {
+  z-index: 9999 !important;
+}
+
+/* Ensure modals appear above sign-in page content */
+body:has(.signin-container) [role="dialog"],
+body:has(.signin-container) .cdp-modal,
+body:has(.signin-container) [data-dialog],
+body:has(.signin-container) .modal,
+body:has(.signin-container) .overlay {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* Additional modal overlay fixes */
+.signin-container [role="dialog"],
+.signin-container .cdp-modal,
+.signin-container [data-dialog],
+.signin-container .modal,
+.signin-container .overlay {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* Center the button without breaking modal layout */
+
+/* Style main action buttons inside modals with same design as sign-in */
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]),
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]),
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]),
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]) {
+  all: revert !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 20px !important;
+  border: none !important;
+  border-radius: 50px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  color: white !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  width: fit-content !important;
+  max-width: 100px !important;
+  min-width: unset !important;
+  margin: 0 auto !important;
+  z-index: 1000 !important;
+  transform: translateY(-1px) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Add the dark frame and light inner button to modal buttons */
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::before,
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::before,
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::before,
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not([class*="close"])::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(145deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  z-index: -2;
+}
+
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::after,
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::after,
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::after,
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"])::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  right: 4px;
+  bottom: 5px;
+  background: linear-gradient(145deg, #6a6a6a 0%, #5a5a5a 50%, #4a4a4a 100%);
+  border-radius: 46px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  z-index: -1;
+  transform: translateY(-1px);
+}
+
+/* Hover states for modal buttons */
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover::after,
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover::after,
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover::after,
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover::after {
+  background: linear-gradient(145deg, #7a7a7a 0%, #6a6a6a 50%, #5a5a5a 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 1px 3px rgba(0,0,0,0.2);
+  transform: translateY(1px);
+}
+
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover,
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover,
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover,
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):hover {
+  transform: translateY(1px) !important;
+}
+
+/* Active states for modal buttons */
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active::after,
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active::after,
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active::after,
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active::after {
+  background: linear-gradient(145deg, #5a5a5a 0%, #4a4a4a 50%, #3a3a3a 100%);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+  transform: translateY(2px);
+}
+
+[role="dialog"] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active,
+.cdp-modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active,
+[data-dialog] button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active,
+.modal button:not([aria-label*="close"]):not([aria-label*="Close"]):not(.close):not([class*="close"]):not([aria-label*="back"]):not([aria-label*="Back"]):not([class*="back"]):active {
+  transform: translateY(2px) !important;
+}
+
+/* Modal */
+button { font-size: 14px !important; }
+h1, h2 { margin-top: 20px !important; margin-bottom: 0px !important; }
+
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 1rem;
+    max-width: 100%;
+  }
+  
+  .card {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+  }
+  
+  .header h1 {
+    font-size: 1.875rem;
+  }
+  
+  .header .subtitle {
+    font-size: 1rem;
+  }
+  
+  .card h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .btn {
+    padding: 1rem 1.5rem;
+  }
+  
+  .faq {
+    margin-top: 3rem;
+  }
+  
+  .faq-item {
+    padding: 1.25rem;
+  }
+  
+  .signin-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .signin-card h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .header h1 {
+    font-size: 1.625rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+  
+  .card h1 {
+    font-size: 1.375rem;
+  }
+  
+  .pricing-info {
+    font-size: 0.8125rem;
+    padding: 0.4375rem 0.875rem;
+  }
+
+  /* Override mobile layout to match desktop structure on very small screens */
+  .wallet-info {
+    flex-direction: row !important;
+    text-align: left !important;
+    gap: 1.5rem !important;
+  }
+  
+  .wallet-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    align-items: flex-start !important;
+    flex: 1 !important;
+  }
+  
+  .wallet-address-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+  
+  .wallet-left-section {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+  
+  .wallet-fund-button {
+    margin-top: 0.25rem !important;
+    align-self: flex-start !important;
+  }
+  
+  .auth-section {
+    flex-shrink: 0 !important;
+  }
+}

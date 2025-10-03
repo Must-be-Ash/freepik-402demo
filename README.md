@@ -105,7 +105,7 @@ Generate AI-powered images using Freepik's Mystic AI, with automatic crypto paym
 - Node.js 18+
 - Freepik API key ([Get one here](https://www.freepik.com/api))
 - Coinbase Developer Platform account for CDP SDK
-- USDC on Base network for payments (mainnet) or Base Sepolia (testnet)
+- USDC on Base network for payments
 
 ### Installation
 
@@ -124,7 +124,7 @@ Generate AI-powered images using Freepik's Mystic AI, with automatic crypto paym
    # Freepik
    FREEPIK_API_KEY=your-freepik-api-key
 
-   # Network (base for mainnet, base-sepolia for testnet)
+   # Network (Base mainnet)
    NEXT_PUBLIC_NETWORK=base
 
    # Coinbase Developer Platform
@@ -153,7 +153,7 @@ Generate AI-powered images using Freepik's Mystic AI, with automatic crypto paym
 
 Freepik needs to send completion notifications to your webhook. In development:
 
-**Option 1: Use webhook.site (easiest)**
+**Use webhook.site**
 ```bash
 # Visit https://webhook.site
 # Copy your unique URL
@@ -161,32 +161,15 @@ Freepik needs to send completion notifications to your webhook. In development:
 WEBHOOK_URL=https://webhook.site/your-unique-id
 ```
 
-**Option 2: Use ngrok**
-```bash
-# Install ngrok
-brew install ngrok
-
-# Start ngrok (in separate terminal)
-ngrok http 3000
-
-# Set in .env.local:
-WEBHOOK_URL=https://abc123.ngrok.io/api/webhooks/freepik
-```
 
 ## Configuration
 
-### Networks
+### Network Configuration
 
-**Base Mainnet (Production):**
+**Base Mainnet:**
 ```env
 NEXT_PUBLIC_NETWORK=base
 USDC_CONTRACT_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-```
-
-**Base Sepolia (Testnet):**
-```env
-NEXT_PUBLIC_NETWORK=base-sepolia
-USDC_CONTRACT_ADDRESS=0x036CbD53842c5426634e7929541eC2318f3dCF7e
 ```
 
 ### Image Generation Options
@@ -248,8 +231,9 @@ freepik/
 ## Troubleshooting
 
 ### "Payment verification failed"
-- **Mainnet not supported yet**: Currently, Freepik's x402 API only works reliably on Base Sepolia testnet
-- Switch to testnet configuration in `.env.local`
+- Ensure you have sufficient USDC balance on Base mainnet
+- Check that your wallet is properly connected
+- Verify network configuration is set to `base` in `.env.local`
 
 ### "No payment header provided"
 - CDP wallet not properly initialized
@@ -285,9 +269,9 @@ npm run lint
 
 ## Learn More
 
-- [x402 Protocol Documentation](https://docs.x402.org)
+- [x402 Protocol Documentation](https://www.x402.org/)
 - [Coinbase Developer Platform](https://docs.cdp.coinbase.com)
-- [Freepik API Documentation](https://docs.freepik.com)
+- [Freepik API Documentation](https://docs.freepik.com/introduction)
 - [Base Network](https://base.org)
 
 ## License

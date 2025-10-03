@@ -165,7 +165,7 @@ export default function SignedInScreen() {
           fetchBuyQuote={fetchBuyQuote}
           fetchBuyOptions={fetchBuyOptions}
           network="base"
-          presetAmountInputs={[10, 25, 50]}
+          presetAmountInputs={[2, 5, 10]}
           onSuccess={handleOnrampSuccess}
         />
       )}

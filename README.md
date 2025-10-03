@@ -154,7 +154,7 @@ Generate AI-powered images using Freepik's Mystic AI, with automatic crypto paym
 
 4. **Start development server:**
    ```bash
-   npm run dev
+   npm run dev -- -p 3000
    ```
 
 5. **Open in browser:**

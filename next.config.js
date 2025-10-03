@@ -16,9 +16,7 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    allowedOrigins: ['*'],
-  },
+  allowedDevOrigins: ['*'],
 }
 
 module.exports = nextConfig

@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@coinbase/cdp-hooks": "^0.0.28",
-    "@coinbase/cdp-react": "^0.0.28",
+    "@coinbase/cdp-core": "^0.0.33",
+    "@coinbase/cdp-hooks": "^0.0.33",
+    "@coinbase/cdp-react": "^0.0.33",
+    "@coinbase/cdp-sdk": "^1.38.3",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.6.0",
     "clsx": "^2.1.1",

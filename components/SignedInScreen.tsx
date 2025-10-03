@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useEvmAddress } from "@coinbase/cdp-hooks";
-import { AuthButton } from "@coinbase/cdp-react";
+import { AuthButton, FundModal, type FundModalProps } from "@coinbase/cdp-react";
 import ImageGenerator from "./ImageGenerator";
 import { TextShimmer } from "@/components/ui/text-shimmer";
+import { getBuyOptions, createBuyQuote } from "@/lib/onramp-api";
 
 export default function SignedInScreen() {
   const { evmAddress } = useEvmAddress();
   const [copied, setCopied] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const copyToClipboard = async () => {
     if (!evmAddress) return;
-    
+
     try {
       await navigator.clipboard.writeText(evmAddress);
       setCopied(true);
@@ -21,6 +23,41 @@ export default function SignedInScreen() {
       console.error('Failed to copy address:', err);
     }
   };
+
+  // Get the user's location (for Onramp)
+  // In production, you should use IP geolocation or ask the user
+  const userCountry = "US";
+  const userSubdivision = "CA"; // Required for US users
+
+  // Onramp API callback functions
+  const fetchBuyQuote: FundModalProps["fetchBuyQuote"] = useCallback(async params => {
+    return createBuyQuote(params);
+  }, []);
+
+  const fetchBuyOptions: FundModalProps["fetchBuyOptions"] = useCallback(async params => {
+    return getBuyOptions(params);
+  }, []);
+
+  // Handle successful purchase
+  const handleOnrampSuccess = useCallback(() => {
+    console.log("✅ Onramp purchase successful!");
+    setIsModalOpen(false);
+    // Optionally refresh balance or show success notification
+  }, []);
+
+  // Add data attribute to body when FundModal is open to control CSS styling
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.setAttribute('data-fund-modal-open', 'true');
+    } else {
+      document.body.removeAttribute('data-fund-modal-open');
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.removeAttribute('data-fund-modal-open');
+    };
+  }, [isModalOpen]);
 
   return (
     <>
@@ -84,13 +121,12 @@ export default function SignedInScreen() {
           </div>
           <div className="wallet-fund-button">
             <div className="modern-auth-button-small">
-              <a 
-                href="https://portal.cdp.coinbase.com/products/faucet" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setIsModalOpen(true)}
+                type="button"
               >
                 Fund your wallet
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -116,6 +152,23 @@ export default function SignedInScreen() {
         </div>
      
       </div>
+
+      {/* Onramp Modal for purchasing USDC */}
+      {isModalOpen && (
+        <FundModal
+          open={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          country={userCountry}
+          subdivision={userSubdivision}
+          cryptoCurrency="usdc"
+          fiatCurrency="usd"
+          fetchBuyQuote={fetchBuyQuote}
+          fetchBuyOptions={fetchBuyOptions}
+          network="base"
+          presetAmountInputs={[10, 25, 50]}
+          onSuccess={handleOnrampSuccess}
+        />
+      )}
     </>
   );
 }

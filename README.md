@@ -44,7 +44,20 @@ Generate AI-powered images using Freepik's Mystic AI, with automatic crypto paym
 - **`lib/config.ts`** - CDP and app configuration
 - **`lib/task-store.ts`** - In-memory task result storage
 - **`lib/webhook-security.ts`** - Webhook signature validation
+- **`lib/cdp-auth.ts`** - JWT generation for Onramp API authentication
+- **`lib/to-camel-case.ts`** - Response data transformation helper
+- **`lib/onramp-api.ts`** - Client-side Onramp API functions
 - **`components/Providers.tsx`** - Coinbase CDP React context provider
+
+### Onramp API Routes
+
+- **`app/api/onramp/buy-options/route.ts`** - Get available payment methods
+  - Returns supported payment options (Coinbase account, debit card, etc.)
+  - Used by FundModal to display payment choices
+
+- **`app/api/onramp/buy-quote/route.ts`** - Create buy quotes
+  - Fetches exchange rates and generates purchase URLs
+  - Handles transaction pricing and Coinbase Onramp widget integration
 
 ## How It Works
 
@@ -179,11 +192,31 @@ USDC_CONTRACT_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 - **Model**: realism, fluid, zen
 - **Creative Detailing**: 0-100 (controls level of detail)
 
+## Onramp Integration
+
+Users can fund their wallets directly from the app using credit card or Apple Pay (US only). The integration uses Coinbase's Onramp API with the following components:
+
+### How Users Fund Their Wallets
+
+1. Click "Fund your wallet" button in the app
+2. Select amount to purchase ($10, $25, or $50 presets or custom amount)
+3. Choose payment method (Coinbase account or debit card)
+4. Complete purchase through Coinbase's secure payment widget
+5. USDC is deposited directly to their embedded wallet on Base
+
+### Onramp Requirements
+
+- **Domain whitelist**: Add your domain to [CDP Portal allowed domains](https://portal.cdp.coinbase.com/products/embedded-wallets/domains)
+- **API credentials**: CDP_API_KEY_ID and CDP_API_KEY_SECRET must be configured
+- **User location**: Country and subdivision (for US users) required for regulatory compliance
+- **Trial mode**: Enabled by default with purchase limits (upgrade for production use)
+
 ## Key Technologies
 
 - **Next.js 14** - React framework with App Router
 - **x402-fetch** - Automatic HTTP payment handling
 - **Coinbase CDP SDK** - Wallet creation and management
+- **Coinbase Onramp** - Fiat-to-crypto purchasing (credit card, Apple Pay)
 - **Freepik Mystic AI** - Image generation
 - **Base Network** - Ethereum L2 for low-cost USDC payments
 - **Tailwind CSS** - Styling
@@ -210,22 +243,28 @@ USDC_CONTRACT_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 freepik/
 ├── app/
 │   ├── api/
-│   │   ├── generate-image/route.ts    # Main API: forwards to Freepik
-│   │   ├── task-status/route.ts       # Polls generation status
-│   │   └── webhooks/freepik/route.ts  # Receives completion callbacks
-│   ├── layout.tsx                     # Root layout with CDP provider
-│   └── page.tsx                       # Main page with password gate
+│   │   ├── generate-image/route.ts         # Main API: forwards to Freepik
+│   │   ├── task-status/route.ts            # Polls generation status
+│   │   ├── webhooks/freepik/route.ts       # Receives completion callbacks
+│   │   └── onramp/
+│   │       ├── buy-options/route.ts        # Onramp payment methods API
+│   │       └── buy-quote/route.ts          # Onramp quote/pricing API
+│   ├── layout.tsx                          # Root layout with CDP provider
+│   └── page.tsx                            # Main page with password gate
 ├── components/
-│   ├── ImageGenerator.tsx             # Image gen form + x402 payment
-│   ├── ClientApp.tsx                  # Wallet connection logic
-│   ├── SignInScreen.tsx               # Wallet connect UI
-│   ├── SignedInScreen.tsx             # Main app after connect
-│   └── Providers.tsx                  # CDP React provider setup
+│   ├── ImageGenerator.tsx                  # Image gen form + x402 payment
+│   ├── ClientApp.tsx                       # Wallet connection logic
+│   ├── SignInScreen.tsx                    # Wallet connect UI
+│   ├── SignedInScreen.tsx                  # Main app after connect (includes Onramp)
+│   └── Providers.tsx                       # CDP React provider setup
 ├── lib/
-│   ├── config.ts                      # App configuration
-│   ├── task-store.ts                  # In-memory task storage
-│   └── webhook-security.ts            # Webhook signature validation
-└── .env.local                         # Environment variables
+│   ├── config.ts                           # App configuration
+│   ├── task-store.ts                       # In-memory task storage
+│   ├── webhook-security.ts                 # Webhook signature validation
+│   ├── cdp-auth.ts                         # JWT generation for Onramp API
+│   ├── to-camel-case.ts                    # Response data transformer
+│   └── onramp-api.ts                       # Onramp client API functions
+└── .env.local                              # Environment variables
 ```
 
 ## Troubleshooting
@@ -250,6 +289,17 @@ freepik/
 - Check webhook is receiving callbacks (monitor webhook.site or server logs)
 - Verify webhook URL is publicly accessible
 - Check task status manually: `/api/task-status?task_id=your-task-id`
+
+### Onramp not working / "CDP API credentials not configured"
+- Verify CDP_API_KEY_ID and CDP_API_KEY_SECRET are set in `.env.local`
+- Ensure your domain is whitelisted in [CDP Portal](https://portal.cdp.coinbase.com/products/embedded-wallets/domains)
+- For localhost development, add `http://localhost:3000` to allowed domains
+- Check server logs for detailed error messages
+
+### Onramp modal shows "Failed to fetch buy options"
+- Confirm API credentials have correct permissions in CDP Portal
+- Verify user location (country/subdivision) is supported by Coinbase Onramp
+- Check browser console and server logs for specific error details
 
 ## Development
 

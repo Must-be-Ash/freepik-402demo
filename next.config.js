@@ -1,11 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      'api.freepik.com', 
-      'cdn-magnific.freepik.com',
-      'ai-statics.freepik.com'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.freepik.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn-magnific.freepik.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ai-statics.freepik.com',
+      },
     ],
+  },
+  experimental: {
+    allowedOrigins: ['*'],
   },
 }
 

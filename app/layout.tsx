@@ -9,14 +9,14 @@ export const metadata: Metadata = {
   authors: [{ name: "must_be_ash" }],
   creator: "must_be_ash",
   publisher: "must_be_ash",
-  metadataBase: new URL("https://freepik-402.vercel.app"),
+  metadataBase: new URL("https://freepik-x402.replit.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "402",
     description: "x402 demo - Freepik x Coinbase",
-    url: "https://freepik-402.vercel.app",
+    url: "https://freepik-x402.replit.app",
     siteName: "402",
     images: [
       {

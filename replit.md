@@ -8,7 +8,7 @@ This application demonstrates a pay-per-use business model for AI image generati
 - **Freepik Mystic AI** - AI-powered image generation service
 - **Next.js 14** - React framework with App Router
 
-Users generate AI images for $0.02 USDC without needing crypto experience. The embedded wallet is created automatically on email login, and Apple Pay integration (US only) allows easy fiat-to-crypto conversion. The `x402-fetch` library intercepts 402 payment-required responses and handles payments automatically.
+Users generate AI images for $0.08 USDC without needing crypto experience. The embedded wallet is created automatically on email login, and Apple Pay integration (US only) allows easy fiat-to-crypto conversion. The `x402-fetch` library intercepts 402 payment-required responses and handles payments automatically.
 
 ## User Preferences
 

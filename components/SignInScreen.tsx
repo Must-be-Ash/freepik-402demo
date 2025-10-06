@@ -21,7 +21,7 @@ export default function SignInScreen() {
             AI Image Generation with Crypto Payments
           </TextShimmer>
           <div className="inline-flex items-center bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-medium border border-blue-200">
-            Generate AI images for just <span className="font-semibold ml-1">$0.02 USDC</span> 
+            Generate AI images for just <span className="font-semibold ml-1">$0.08 USDC</span> 
           </div>
         </div>
         
